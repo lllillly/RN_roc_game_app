@@ -11,11 +11,67 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const CURRENT_WIDTH = Dimensions.get(`window`).width;
 
+const ROC_DATUM = ["가위", "바위", "보"];
+
 const App = () => {
   const [tab, setTab] = useState(0);
+  const [mineData, setMineData] = useState(`잠시만 기다려주세요.`);
+  const [cpuData, setCpuData] = useState(`잠시만 기다려주세요.`);
+  const [resultText, setResultText] = useState(``);
+
+  const _getRandomNumber = () => Math.floor(Math.random() * 3);
+  /* 0,1,2 중 랜덤한 숫자를 뽑아내어 소수점에서 내림 */
 
   const _startButtonClickHandler = (value) => {
     setTab(value);
+
+    if (value === 0) {
+      setMineData(`잠시만 기다려 주세요`);
+      setCpuData(`잠시만 기다려 주세요`);
+      setResultText(``);
+    }
+    if (value === 1) {
+      const ran1 = _getRandomNumber();
+      const ran2 = _getRandomNumber();
+
+      const mine = ROC_DATUM[ran1];
+      const cpu = ROC_DATUM[ran2];
+
+      setMineData(mine);
+      setCpuData(cpu);
+
+      if (ran1 === ran2) {
+        setResultText("사용자와 컴퓨터는 비겼습니다.");
+        return;
+      }
+      if (ran1 === 0) {
+        if (ran2 === 1) {
+          setResultText("사용자는 컴퓨터에게 졌습니다");
+          return;
+        } else if (ran2 === 2) {
+          setResultText("사용자는 컴퓨터에게 이겼습니다.");
+          return;
+        }
+      }
+      if (ran1 === 1) {
+        if (ran2 === 0) {
+          setResultText("사용자는 컴퓨터에게 이겼습니다.");
+          return;
+        } else if (ran2 === 2) {
+          setResultText("사용자는 컴퓨터에게 졌습니다");
+          return;
+        }
+      }
+      if (ran1 === 2) {
+        if (ran2 === 0) {
+          setResultText("사용자는 컴퓨터에게 졌습니다");
+          return;
+        } else if (ran2 === 1) {
+          setResultText("사용자는 컴퓨터에게 이겼습니다.");
+          return;
+        }
+      }
+    }
   };
 
   return (
@@ -32,7 +88,7 @@ const App = () => {
         {tab === 1 && (
           <View>
             <View style={styles.ingameTop}>
-              <Text>머리</Text>
+              <Text>{mineData}</Text>
             </View>
             <View style={styles.ingameMiddle}>
               <LinearGradient
@@ -45,13 +101,15 @@ const App = () => {
               </LinearGradient>
             </View>
             <View style={styles.ingameBottom}>
-              <Text>발</Text>
+              <Text>{cpuData}</Text>
             </View>
           </View>
         )}
       </View>
       <View style={styles.resultArea}>
-        <View style={styles.resultAreaTop}></View>
+        <View style={styles.resultAreaTop}>
+          <Text>{resultText}</Text>
+        </View>
         <View style={styles.resultAreaBottom}>
           {tab === 1 && (
             <TouchableOpacity
