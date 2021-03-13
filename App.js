@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Image,
   /* 현재 디바이스의 width 값 가져오기 - Dimensions */
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,12 +13,19 @@ import { LinearGradient } from "expo-linear-gradient";
 const CURRENT_WIDTH = Dimensions.get(`window`).width;
 
 const ROC_DATUM = ["가위", "바위", "보"];
+const ROC_IMAGES = [
+  "http://i.011st.com/cm_exhibition/2012/1501/mwevent/game/images/user_img_0.png",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEqumKKO3S5YxpDvwSclqci_cvGC1_HRKimg&usqp=CAU",
+  "http://image.blog.livedoor.jp/deaiup/imgs/1/5/1506be2c.png",
+];
 
 const App = () => {
   const [tab, setTab] = useState(0);
   const [mineData, setMineData] = useState(`잠시만 기다려주세요.`);
   const [cpuData, setCpuData] = useState(`잠시만 기다려주세요.`);
   const [resultText, setResultText] = useState(``);
+  const [mineImage, setMineImage] = useState(``);
+  const [cpuImage, setCpuImage] = useState(``);
 
   const _getRandomNumber = () => Math.floor(Math.random() * 3);
   /* 0,1,2 중 랜덤한 숫자를 뽑아내어 소수점에서 내림 */
@@ -37,8 +45,14 @@ const App = () => {
       const mine = ROC_DATUM[ran1];
       const cpu = ROC_DATUM[ran2];
 
+      const mineImage = ROC_IMAGES[ran1];
+      const cpuImage = ROC_IMAGES[ran2];
+
       setMineData(mine);
       setCpuData(cpu);
+
+      setMineImage(mineImage);
+      setCpuImage(cpuImage);
 
       if (ran1 === ran2) {
         setResultText("사용자와 컴퓨터는 비겼습니다.");
@@ -88,6 +102,12 @@ const App = () => {
         {tab === 1 && (
           <View>
             <View style={styles.ingameTop}>
+              <Image
+                style={styles.rocImage}
+                source={{
+                  uri: mineImage,
+                }}
+              />
               <Text>{mineData}</Text>
             </View>
             <View style={styles.ingameMiddle}>
@@ -101,6 +121,12 @@ const App = () => {
               </LinearGradient>
             </View>
             <View style={styles.ingameBottom}>
+              <Image
+                style={styles.rocImage}
+                source={{
+                  uri: cpuImage,
+                }}
+              />
               <Text>{cpuData}</Text>
             </View>
           </View>
@@ -191,6 +217,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: "#fff",
+  },
+  rocImage: {
+    width: 150,
+    height: 150,
   },
 });
 
